@@ -27,8 +27,9 @@ class kronos:
         return self.frames/self.elapsed
 
 class webcam:
-    def __init__(self,width,height,src=0):
+    def __init__(self,width,height,src=0,wait=1):
         self.stream = cv2.VideoCapture(src)
+        self.wait = wait
         self.stream.set(3, width)
         self.stream.set(4, height)
         (self.grabbed, self.framevar) = self.stream.read()
@@ -46,6 +47,7 @@ class webcam:
                 return
 
             (self.grabbed, self.framevar) = self.stream.read()
+            cv2.waitKey(self.wait)
     
     def read(self):
         return self.framevar

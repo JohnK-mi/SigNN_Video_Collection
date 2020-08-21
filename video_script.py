@@ -109,21 +109,25 @@ def takeVideo(character):
         print("Number of frames:",frmtrk.frames)
         print("Time:",frmtrk.elapsed)
         # displaying the saved video
-        capture_display = cv2.VideoCapture(filename)
+        capture_display = webcam(cam_width,cam_height,filename,int(1000/frames_per_second)).start()
         display_frame = 1
-        while capture_display.isOpened():
-            now_display = time.monotonic()
-            ret, frame = capture_display.read() 
-            cv2.putText(frame, "DISPLAYING THE VIDEO",  
-                    (50, 50), font, 
-                    1, (0, 0, 255), 
-                    4, cv2.LINE_AA)
-            if frame is not None:
-                cv2.imshow('RECORDING', frame)
-                display_frame+=1
-            if display_frame>=total_frames:
-                break
-            k = cv2.waitKey(int(1000/frames_per_second))
+        frame_list = []
+        while not capture_display.stopped:
+            #for i in range(int(total_frames)):
+                #frame = capture_display.read()
+                #frame_list.append(frame)
+            #for i in range(int(total_frames)):
+                #frame = frame_list.pop(0)
+                frame = capture_display.read()
+                cv2.putText(frame, "DISPLAYING THE VIDEO",  
+                        (50, 50), font, 
+                        1, (0, 0, 255), 
+                        4, cv2.LINE_AA)
+                if frame is not None:
+                    cv2.imshow('RECORDING', frame)
+                if frame is None:
+                    break
+                k = cv2.waitKey(1)
             
 
         while (capture.stopped != True):
