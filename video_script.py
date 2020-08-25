@@ -82,7 +82,7 @@ def takeVideo(character):
                 
                 out.write(record_frame)
                 frmtrk.addFrame()
-                arrow = (0.1*capture.stream.get(3)) + (((tmp_time)/capture_duration)*((0.8*capture.stream.get(3))-70))
+                arrow = (0.1*capture.stream.get(3)) + ((frmtrk.frames/total_frames)*0.8*capture.stream.get(3))
                 cv2.putText(show_frame, str('|'),  
                         (int(capture.stream.get(3)*0.1), 250), font, 
                         7, (0, 0, 255), 
@@ -129,7 +129,7 @@ def takeVideo(character):
                     break
                 k = cv2.waitKey(1)
             
-
+        capture_display.stop()
         while (capture.stopped != True):
             
             frame = capture.read()
@@ -145,41 +145,27 @@ def takeVideo(character):
             if frame is not None:                                
                 cv2.imshow('RECORDING', frame)
             k = cv2.waitKey(1) 
-            if k == ord('r'): 
-                capture_display = cv2.VideoCapture(filename)
-                display_frame = 1
-                while capture_display.isOpened():
-                    now_display = time.monotonic()
-                    ret, frame = capture_display.read()
-                    if frame is not None: 
-                        cv2.imshow('RECORDING', frame)
-                    k = cv2.waitKey(40)
-                    display_frame += 1
-                    if display_frame >= 61:
-                        break
             if k == ord('n'): 
                 quality_control = 'N'
                 break
             if k == ord('y'):
                 quality_control = 'Y'
                 break
-            elif k == 27:
-                capture.release()
-                out.release()
-                cv2.destroyAllWindows()
+
+        out.release()
 
         if quality_control == "Y" or quality_control == "y":
             UploadVideoPath(filename,character)
-            out.release()
-            capture_display.release()
-            os.remove(filename)
             capture.stop()
+            capture_display.stop()
+            
+            os.remove(filename)
     
         else:
-            out.release()
-            capture_display.release()
-            os.remove(filename)
             capture.stop()
+            capture_display.stop()
+            out.release()
+            os.remove(filename)
             print("deleted {}".format(filename))
             continue
     return filename

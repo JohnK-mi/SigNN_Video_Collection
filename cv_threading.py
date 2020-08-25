@@ -54,6 +54,7 @@ class webcam:
 
     def stop(self):
         self.stopped = True
+        self.stream.release()
 
     def changeDim(self,width,height):
         self.stream.set(3, width)
